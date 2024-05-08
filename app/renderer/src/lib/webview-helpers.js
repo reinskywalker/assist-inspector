@@ -41,44 +41,31 @@ export function setHtmlElementAttributes(obj) {
  * - all custom attributes need to be transformed to normal width/height/x/y
  */
 export function parseSource(source) {
-  // TODO this check is a bit brittle, figure out a better way to check whether we have a web
-  // source vs something else. Just checking for <html in the source doesn't work because fake
-  // driver app sources can include embedded <html elements even though the overall source is not
-  // html. So for now just look for fake-drivery things like <app> or <mock...> and ensure we don't
-  // parse that as html
-  if (!source.includes('<html') || source.includes('<app ') || source.includes('<mock')) {
+  const isHTML = source.includes('<html');
+  const isLikelyFakeDriverSource = source.includes('<app ') || source.includes('<mock');
+
+  if (!isHTML || isLikelyFakeDriverSource) {
     return source;
   }
 
   const dom = parseDocument(source);
   const $ = load(dom);
 
-  // Remove the head and the scripts
-  const head = $('head');
-  head.remove();
-  const scripts = $('script');
-  scripts.remove();
+  $('head, script').remove();
 
-  // Clean the source
-  $('*')
-    // remove all existing width height or x/y attributes
-    .removeAttr('width')
-    .removeAttr('height')
-    .removeAttr('x')
-    .removeAttr('y')
-    // remove all `data-appium-inspector-` prefixes so only the width|height|x|y are there
-    .each(function () {
-      const $el = $(this);
+  $('*').each(function () {
+    const $el = $(this);
 
-      ['width', 'height', 'x', 'y'].forEach((rectAttr) => {
-        if ($el.attr(`data-appium-inspector-${rectAttr}`)) {
-          $el.attr(rectAttr, $el.attr(`data-appium-inspector-${rectAttr}`));
+    ['width', 'height', 'x', 'y'].forEach((attr) => {
+      const inspectorAttr = `data-appium-inspector-${attr}`;
+      const value = $el.attr(inspectorAttr);
 
-          /* remove the old attribute */
-          $el.removeAttr(`data-appium-inspector-${rectAttr}`);
-        }
-      });
+      if (value !== undefined) {
+        $el.attr(attr, value);
+        $el.removeAttr(inspectorAttr);
+      }
     });
+  });
 
   return $.xml();
 }
