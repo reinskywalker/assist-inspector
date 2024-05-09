@@ -1,5 +1,5 @@
 import {DeleteOutlined, PlusOutlined} from '@ant-design/icons';
-import {Button, Checkbox, Col, Form, Input, Modal, Row, Select, Tooltip} from 'antd';
+import {Button, Checkbox, Collapse, Col, Form, Input, Modal, Row, Select, Tooltip} from 'antd';
 import React, {useEffect, useRef} from 'react';
 
 import {ROW} from '../../constants/antd-types';
@@ -90,95 +90,104 @@ const CapabilityEditor = (props) => {
   return (
     <Row type={ROW.FLEX} align="top" justify="start" className={SessionStyles.capsFormRow}>
       <Col order={1} span={12} className={SessionStyles.capsFormCol}>
-        <Form className={SessionStyles.newSessionForm}>
-          {caps.map((cap, index) => (
-            <Row gutter={8} key={index}>
-              <Col span={7}>
-                <Form.Item>
-                  <Tooltip title={whitespaceMsg(cap.name, t)} open={whitespaces.test(cap.name)}>
-                    <Input
-                      disabled={isEditingDesiredCaps}
-                      id={`desiredCapabilityName_${index}`}
-                      placeholder={t('Name')}
-                      value={cap.name}
-                      onChange={(e) => setCapabilityParam(index, 'name', e.target.value)}
-                      ref={index === caps.length - 1 ? latestCapField : ''}
-                      className={SessionStyles.capsBoxFont}
-                    />
-                  </Tooltip>
-                </Form.Item>
-              </Col>
-              <Col span={8}>
-                <Form.Item>
-                  <Select
-                    disabled={isEditingDesiredCaps}
-                    defaultValue={cap.type}
-                    onChange={(val) => handleSetType(setCapabilityParam, caps, index, val)}
-                  >
-                    <Select.Option value="text">{t('text')}</Select.Option>
-                    <Select.Option value="boolean">{t('boolean')}</Select.Option>
-                    <Select.Option value="number">{t('number')}</Select.Option>
-                    <Select.Option value="object">{t('JSON object')}</Select.Option>
-                    <Select.Option value="file">{t('filepath')}</Select.Option>
-                  </Select>
-                </Form.Item>
-              </Col>
-              <Col span={7}>
-                <Form.Item>
-                  <Tooltip title={whitespaceMsg(cap.value, t)} open={whitespaces.test(cap.value)}>
-                    <CapabilityControl
-                      {...props}
-                      cap={cap}
-                      id={`desiredCapabilityValue_${index}`}
-                      onSetCapabilityParam={(value) => setCapabilityParam(index, 'value', value)}
-                      onPressEnter={index === caps.length - 1 ? addCapability : () => {}}
-                    />
-                  </Tooltip>
-                </Form.Item>
-              </Col>
-              <Col span={2}>
-                <div className={SessionStyles.btnDeleteCap}>
+        <Collapse bordered={true}>
+          <Collapse.Panel header={t('Capability Form')}>
+            <Form className={SessionStyles.newSessionForm}>
+              {caps.map((cap, index) => (
+                <Row gutter={8} key={index}>
+                  <Col span={7}>
+                    <Form.Item>
+                      <Tooltip title={whitespaceMsg(cap.name, t)} open={whitespaces.test(cap.name)}>
+                        <Input
+                          disabled={isEditingDesiredCaps}
+                          id={`desiredCapabilityName_${index}`}
+                          placeholder={t('Name')}
+                          value={cap.name}
+                          onChange={(e) => setCapabilityParam(index, 'name', e.target.value)}
+                          ref={index === caps.length - 1 ? latestCapField : ''}
+                          className={SessionStyles.capsBoxFont}
+                        />
+                      </Tooltip>
+                    </Form.Item>
+                  </Col>
+                  <Col span={8}>
+                    <Form.Item>
+                      <Select
+                        disabled={isEditingDesiredCaps}
+                        defaultValue={cap.type}
+                        onChange={(val) => handleSetType(setCapabilityParam, caps, index, val)}
+                      >
+                        <Select.Option value="text">{t('text')}</Select.Option>
+                        <Select.Option value="boolean">{t('boolean')}</Select.Option>
+                        <Select.Option value="number">{t('number')}</Select.Option>
+                        <Select.Option value="object">{t('JSON object')}</Select.Option>
+                        <Select.Option value="file">{t('filepath')}</Select.Option>
+                      </Select>
+                    </Form.Item>
+                  </Col>
+                  <Col span={7}>
+                    <Form.Item>
+                      <Tooltip
+                        title={whitespaceMsg(cap.value, t)}
+                        open={whitespaces.test(cap.value)}
+                      >
+                        <CapabilityControl
+                          {...props}
+                          cap={cap}
+                          id={`desiredCapabilityValue_${index}`}
+                          onSetCapabilityParam={(value) =>
+                            setCapabilityParam(index, 'value', value)
+                          }
+                          onPressEnter={index === caps.length - 1 ? addCapability : () => {}}
+                        />
+                      </Tooltip>
+                    </Form.Item>
+                  </Col>
+                  <Col span={2}>
+                    <div className={SessionStyles.btnDeleteCap}>
+                      <Form.Item>
+                        <Button
+                          {...{disabled: caps.length <= 1 || isEditingDesiredCaps}}
+                          icon={<DeleteOutlined />}
+                          onClick={() => removeCapability(index)}
+                        />
+                      </Form.Item>
+                    </div>
+                  </Col>
+                </Row>
+              ))}
+              <Row>
+                <Col span={22}>
+                  <Form.Item>
+                    <Checkbox
+                      checked={addVendorPrefixes}
+                      onChange={(e) => setAddVendorPrefixes(e.target.checked)}
+                    >
+                      {t('Add Prefixes to Vendor Capabilities (e.g. appium:app)')}
+                    </Checkbox>
+                  </Form.Item>
+                </Col>
+                <Col span={2}>
                   <Form.Item>
                     <Button
-                      {...{disabled: caps.length <= 1 || isEditingDesiredCaps}}
-                      icon={<DeleteOutlined />}
-                      onClick={() => removeCapability(index)}
+                      disabled={isEditingDesiredCaps}
+                      id="btnAddDesiredCapability"
+                      icon={<PlusOutlined />}
+                      onClick={addCapability}
+                      className={SessionStyles['add-desired-capability-button']}
                     />
                   </Form.Item>
-                </div>
-              </Col>
-            </Row>
-          ))}
-          <Row>
-            <Col span={22}>
-              <Form.Item>
-                <Checkbox
-                  checked={addVendorPrefixes}
-                  onChange={(e) => setAddVendorPrefixes(e.target.checked)}
-                >
-                  {t('autoAddPrefixes')}
-                </Checkbox>
-              </Form.Item>
-            </Col>
-            <Col span={2}>
-              <Form.Item>
-                <Button
-                  disabled={isEditingDesiredCaps}
-                  id="btnAddDesiredCapability"
-                  icon={<PlusOutlined />}
-                  onClick={addCapability}
-                  className={SessionStyles['add-desired-capability-button']}
-                />
-              </Form.Item>
-            </Col>
-          </Row>
-        </Form>
+                </Col>
+              </Row>
+            </Form>
+          </Collapse.Panel>
+        </Collapse>
       </Col>
       <Col order={2} span={12} className={SessionStyles.capsFormattedCol}>
         <FormattedCaps {...props} />
         <Modal
           open={showSaveAsModal}
-          title={t('Save Capability Set As')}
+          title={t('Save Capability As')}
           okText={t('Save')}
           cancelText={t('Cancel')}
           onCancel={hideSaveAsModal}

@@ -11,7 +11,7 @@ const ServerTabCustom = ({server, setServerParam, t}) => (
           <Input
             id="customServerHost"
             placeholder={DEFAULT_SERVER_HOST}
-            addonBefore={t('Remote Host')}
+            addonBefore={t('Host')}
             value={server.remote.hostname}
             onChange={(e) => setServerParam('hostname', e.target.value)}
           />
@@ -22,7 +22,7 @@ const ServerTabCustom = ({server, setServerParam, t}) => (
           <Input
             id="customServerPort"
             placeholder={DEFAULT_SERVER_PORT}
-            addonBefore={t('Remote Port')}
+            addonBefore={t('Port')}
             value={server.remote.port}
             onChange={(e) => setServerParam('port', e.target.value)}
           />
@@ -33,7 +33,7 @@ const ServerTabCustom = ({server, setServerParam, t}) => (
           <Input
             id="customServerPath"
             placeholder={DEFAULT_SERVER_PATH}
-            addonBefore={t('Remote Path')}
+            addonBefore={t('Path')}
             value={server.remote.path}
             onChange={(e) => setServerParam('path', e.target.value)}
           />

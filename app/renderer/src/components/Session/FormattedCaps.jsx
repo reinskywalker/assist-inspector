@@ -1,5 +1,5 @@
 import {CloseOutlined, EditOutlined, SaveOutlined} from '@ant-design/icons';
-import {Alert, Button, Card, Tooltip} from 'antd';
+import {Alert, Button, Collapse, Card, Tooltip} from 'antd';
 import hljs from 'highlight.js';
 import React from 'react';
 
@@ -32,7 +32,7 @@ const FormattedCaps = (props) => {
   const setCapsTitle = () => {
     const {setDesiredCapsName} = props;
     if (!title) {
-      return t('JSON Representation');
+      return t('Capability Builder - JSON');
     } else if (!isEditingDesiredCapsName) {
       return title;
     } else {
@@ -112,7 +112,7 @@ const FormattedCaps = (props) => {
             </Tooltip>
           )}
           {!isEditingDesiredCaps && (
-            <Tooltip title={t('Edit Raw JSON')} placement="topRight">
+            <Tooltip title={t('Edit JSON')} placement="topRight">
               <Button onClick={startDesiredCapsEditor} icon={<EditOutlined />} />
             </Tooltip>
           )}

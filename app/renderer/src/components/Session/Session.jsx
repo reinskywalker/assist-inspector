@@ -97,7 +97,7 @@ const Session = (props) => {
             onChange={(tab) => handleSelectServerTab(tab)}
             className={SessionStyles.serverTabs}
             items={[
-              {label: t('Appium Server'), key: 'remote', children: <ServerTabCustom {...props} />},
+              {label: 'Local', key: 'remote', children: <ServerTabCustom {...props} />},
               ..._(visibleProviders).map((providerName) => {
                 const provider = CloudProviders[providerName];
                 if (!provider) {
@@ -109,10 +109,6 @@ const Session = (props) => {
                   children: provider.tab(props),
                 };
               }),
-              {
-                label: <span className="addCloudProviderTab">{t('Select Cloud Providers')}</span>,
-                key: ADD_CLOUD_PROVIDER_TAB_KEY,
-              },
             ]}
           />
           <AdvancedServerParams {...props} />
@@ -132,8 +128,7 @@ const Session = (props) => {
             {
               label: (
                 <span>
-                  {t('Saved Capability Sets')}{' '}
-                  <Badge count={savedSessions.length} offset={[0, -3]} />
+                  {t('Saved Capability')} <Badge count={savedSessions.length} offset={[0, -3]} />
                 </span>
               ),
               key: 'saved',
@@ -142,7 +137,7 @@ const Session = (props) => {
               children: <SavedSessions {...props} />,
             },
             {
-              label: t('Attach to Session'),
+              label: t('Intercept Session'),
               key: 'attach',
               className: SessionStyles.scrollingTab,
               children: <AttachToSession {...props} />,
@@ -151,13 +146,13 @@ const Session = (props) => {
         />
 
         <div className={SessionStyles.sessionFooter}>
-          <div className={SessionStyles.desiredCapsLink}>
+          {/* <div className={SessionStyles.desiredCapsLink}>
             <a href="#" onClick={(e) => e.preventDefault() || shell.openExternal(LINKS.CAPS_DOCS)}>
               <LinkOutlined />
               &nbsp;
               {t('desiredCapabilitiesDocumentation')}
             </a>
-          </div>
+          </div> */}
           {!isAttaching && capsUUID && (
             <Button
               onClick={() =>

@@ -14,7 +14,7 @@ const dataSource = (savedSessions, t) => {
   return savedSessions.map((session) => ({
     key: session.uuid,
     name: session.name || t('unnamed'),
-    date: moment(session.date).format('YYYY-MM-DD'),
+    date: moment(session.date).format('DD MMM YYYY'),
   }));
 };
 
@@ -75,7 +75,7 @@ const SavedSessions = (props) => {
       key: 'name',
     },
     {
-      title: t('Created'),
+      title: t('Saved'),
       dataIndex: 'date',
       key: 'date',
       width: SAVED_SESSIONS_TABLE_VALUES.DATE_COLUMN_WIDTH,
